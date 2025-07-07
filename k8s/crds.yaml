@@ -1776,6 +1776,7 @@ spec:
                 - blockdev
                 - iscsi
                 - nvmf
+                - ublk
                 - ""
                 type: string
               image:
@@ -4356,6 +4357,7 @@ spec:
                 - blockdev
                 - iscsi
                 - nvmf
+                - ublk
                 - ""
                 type: string
               image:

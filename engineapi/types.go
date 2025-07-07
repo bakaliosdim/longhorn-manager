@@ -284,6 +284,8 @@ func GetEngineInstanceFrontend(dataEngine longhorn.DataEngineType, volumeFronten
 		frontend = string(iscsidevtypes.FrontendTGTISCSI)
 	case longhorn.VolumeFrontendNvmf:
 		frontend = string(spdkdevtypes.FrontendSPDKTCPNvmf)
+	case longhorn.VolumeFrontendUblk:
+		frontend = "ublk"
 	case longhorn.VolumeFrontendEmpty:
 		frontend = ""
 	default:
