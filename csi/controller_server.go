@@ -473,7 +473,7 @@ func (cs *ControllerServer) ControllerPublishVolume(ctx context.Context, req *cs
 		return nil, status.Errorf(codes.NotFound, "volume %s not found", volumeID)
 	}
 
-	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) {
+	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) && volume.Frontend != "ublk" {
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s invalid frontend type %s", volumeID, volume.Frontend)
 	}
 
