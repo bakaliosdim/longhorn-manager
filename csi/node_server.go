@@ -149,7 +149,7 @@ func (ns *NodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s frontend is disabled", volumeID)
 	}
 
-	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) {
+	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) && volume.Frontend != "ublk" {
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s has invalid frontend type %v", volumeID, volume.Frontend)
 	}
 
@@ -446,7 +446,7 @@ func (ns *NodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s frontend is disabled", volumeID)
 	}
 
-	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) {
+	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) && volume.Frontend != "ublk" {
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s has invalid frontend type %v", volumeID, volume.Frontend)
 	}
 
