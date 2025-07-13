@@ -357,7 +357,7 @@ func getBinaryAndArgsForEngineProcessCreation(e *longhorn.Engine,
 	dataLocality longhorn.DataLocality, engineCLIAPIVersion int) (string, []string, error) {
 
 	args := []string{"controller", e.Spec.VolumeName,
-		"--frontend", frontend,
+		"--frontend", "ublk",
 	}
 
 	if e.Spec.RevisionCounterDisabled {
@@ -737,11 +737,14 @@ func (c *InstanceManagerClient) engineInstanceUpgrade(req *EngineInstanceUpgrade
 		return nil, err
 	}
 
-	frontend, err := GetEngineInstanceFrontend(req.Engine.Spec.DataEngine, req.VolumeFrontend)
-	if err != nil {
-		return nil, err
-	}
-	args := []string{"controller", req.Engine.Spec.VolumeName, "--frontend", frontend, "--upgrade"}
+	// frontend, err := GetEngineInstanceFrontend(req.Engine.Spec.DataEngine, req.VolumeFrontend)
+	// if err != nil {
+	// 	return nil, err
+	// }
+	args := []string{"controller", req.Engine.Spec.VolumeName,
+		// "--frontend", frontend,
+		"--frontend", "ublk",
+		"--upgrade"}
 	for _, addr := range req.Engine.Spec.UpgradedReplicaAddressMap {
 		args = append(args, "--replica", GetBackendReplicaURL(addr))
 	}
