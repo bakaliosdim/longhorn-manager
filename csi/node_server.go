@@ -341,7 +341,7 @@ func (ns *NodeServer) nodeStageMountVolume(volumeID, devicePath, stagingTargetPa
 		return nil
 	}
 
-	if _, err := os.Stat(devicePath); err != nil {
+	if _, err := os.Stat(devicePath); err != nil && !strings.HasSuffix(devicePath, ".sock") {
 		return status.Error(codes.Internal, errors.Wrapf(err, "failed to check if device %v exists", devicePath).Error())
 	}
 
