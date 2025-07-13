@@ -330,7 +330,8 @@ func (ns *NodeServer) nodeStageSharedVolume(volumeID, shareEndpoint, targetPath 
 }
 
 func (ns *NodeServer) nodeStageMountVolume(volumeID, devicePath, stagingTargetPath, fsType string, mountFlags []string, mounter *mount.SafeFormatAndMount) error {
-	log := ns.log.WithFields(logrus.Fields{"function": "NodePublishVolume"})
+	log := ns.log.WithFields(logrus.Fields{"function": "nodeStageMountVolume"})
+	log.Infof("nodeStageMountVolume called with volumeID: %v, devicePath: %v, stagingTargetPath: %v, fsType: %v, mountFlags: %v", volumeID, devicePath, stagingTargetPath, fsType, mountFlags)
 
 	isMnt, err := ensureMountPoint(stagingTargetPath, mounter)
 	if err != nil {
