@@ -489,6 +489,10 @@ func (ns *NodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	}
 
 	devicePath := volume.Controllers[0].Endpoint
+	if volume.Frontend == "ublk" {
+		devicePath = "/dev/ublkb0"
+	}
+
 	diskFormat, err := getDiskFormat(devicePath)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to evaluate device filesystem %v format: %v", devicePath, err)
