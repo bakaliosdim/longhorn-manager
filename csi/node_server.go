@@ -149,7 +149,7 @@ func (ns *NodeServer) NodePublishVolume(ctx context.Context, req *csi.NodePublis
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s frontend is disabled", volumeID)
 	}
 
-	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) {
+	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) && volume.Frontend != "ublk" {
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s has invalid frontend type %v", volumeID, volume.Frontend)
 	}
 
@@ -330,7 +330,8 @@ func (ns *NodeServer) nodeStageSharedVolume(volumeID, shareEndpoint, targetPath 
 }
 
 func (ns *NodeServer) nodeStageMountVolume(volumeID, devicePath, stagingTargetPath, fsType string, mountFlags []string, mounter *mount.SafeFormatAndMount) error {
-	log := ns.log.WithFields(logrus.Fields{"function": "NodePublishVolume"})
+	log := ns.log.WithFields(logrus.Fields{"function": "nodeStageMountVolume"})
+	log.Infof("nodeStageMountVolume called with volumeID: %v, devicePath: %v, stagingTargetPath: %v, fsType: %v, mountFlags: %v", volumeID, devicePath, stagingTargetPath, fsType, mountFlags)
 
 	isMnt, err := ensureMountPoint(stagingTargetPath, mounter)
 	if err != nil {
@@ -340,7 +341,7 @@ func (ns *NodeServer) nodeStageMountVolume(volumeID, devicePath, stagingTargetPa
 		return nil
 	}
 
-	if _, err := os.Stat(devicePath); err != nil {
+	if _, err := os.Stat(devicePath); err != nil && !strings.HasSuffix(devicePath, ".sock") {
 		return status.Error(codes.Internal, errors.Wrapf(err, "failed to check if device %v exists", devicePath).Error())
 	}
 
@@ -446,7 +447,7 @@ func (ns *NodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s frontend is disabled", volumeID)
 	}
 
-	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) {
+	if volume.Frontend != string(longhorn.VolumeFrontendBlockDev) && volume.Frontend != "ublk" {
 		return nil, status.Errorf(codes.InvalidArgument, "volume %s has invalid frontend type %v", volumeID, volume.Frontend)
 	}
 
@@ -488,6 +489,10 @@ func (ns *NodeServer) NodeStageVolume(ctx context.Context, req *csi.NodeStageVol
 	}
 
 	devicePath := volume.Controllers[0].Endpoint
+	if volume.Frontend == "ublk" {
+		devicePath = "/dev/ublkb0"
+	}
+
 	diskFormat, err := getDiskFormat(devicePath)
 	if err != nil {
 		return nil, status.Errorf(codes.Internal, "failed to evaluate device filesystem %v format: %v", devicePath, err)

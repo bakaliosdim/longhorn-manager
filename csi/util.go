@@ -242,6 +242,10 @@ func getVolumeOptions(volumeID string, volOptions map[string]string) (*longhornc
 		vol.DataEngine = driver
 	}
 
+	if frontend, ok := volOptions["frontend"]; ok {
+		vol.Frontend = frontend
+	}
+
 	if freezeFilesystemForSnapshot, ok := volOptions["freezeFilesystemForSnapshot"]; ok {
 		if err := types.ValidateFreezeFilesystemForSnapshot(longhorn.FreezeFilesystemForSnapshot(freezeFilesystemForSnapshot)); err != nil {
 			return nil, errors.Wrap(err, "invalid parameter freezeFilesystemForSnapshot")

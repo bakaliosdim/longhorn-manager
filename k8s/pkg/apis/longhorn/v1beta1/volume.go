@@ -36,6 +36,7 @@ type VolumeFrontend string
 const (
 	VolumeFrontendBlockDev = VolumeFrontend("blockdev")
 	VolumeFrontendISCSI    = VolumeFrontend("iscsi")
+	VolumeFrontendUblk     = VolumeFrontend("ublk")
 	VolumeFrontendEmpty    = VolumeFrontend("")
 )
 
